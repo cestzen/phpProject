@@ -155,7 +155,7 @@ input {
 			// Évènement déclenché à la sélection d'un objet (entité)
 			place.onSelect = function(entity) 
 			{
-				alert('Ville ' + entity.attributes.VILLE.toLowerCase());
+				alert('Ligne : ' + entity.attributes.LIGNEDES + '\nAdresse : ' + entity.attributes.ADRESSE + '\nType : ' + entity.attributes.RESEAU);
 			}
 			
 			if(wfsLayer)
