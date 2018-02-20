@@ -2,6 +2,12 @@
 <html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Exemple API CUB - Localisation sur adresse en WPS</title>
+<?php
+session_start();
+if(!isset($_SESSION['username'])){ 
+    header("Location: http://localhost/phpProject/src/php/login.html");
+}
+?>
 <script type="text/javascript"
 	src="//data.bordeaux-metropole.fr/api/cub.xjs?key=G0NDMI15J2"></script>
 

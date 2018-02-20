@@ -5,6 +5,13 @@
 <link rel="stylesheet"
 	href="jquery/jquery.mobile.structure-1.4.2.min.css" />
 <title>Carte simple</title>
+<?php
+session_start();
+if(!isset($_SESSION['username'])){ 
+    header("Location: http://localhost/phpProject/src/php/login.html");
+}
+?>
+
 <script type="text/javascript"
 	src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=G0NDMI15J2"></script>
 
@@ -15,7 +22,7 @@
 
 		abc = new CUB.Layer.Dynamic();
 	});
-	
+
 	function mapVcub() {
 		abc.destroy();
 		CUB.ready(function() {
@@ -25,29 +32,26 @@
 					'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2', {
 						layerName : 'TB_STVEL_P',
 						style : new CUB.Style({
+							color : new CUB.Color('#6892EB')
+						})
+					});
+		});
+	};
+	function mapTraffic() {
+		abc.destroy();
+		CUB.ready(function() {
+			// Création de la couche
+
+			abc = new CUB.Layer.Dynamic('',
+					'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2', {
+						layerName : 'CI_TRAFI_L',
+						style : new CUB.Style({
 							color : new CUB.Color('#FF1515')
 						})
 					});
 		});
+	};
 
-	function mapTraffic() {
-		abc.destroy();
-		CUB
-				.ready(function() {
-					// Création de la couche
-
-					abc = new CUB.Layer.Dynamic(
-							'',
-							'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2',
-							{
-								layerName : 'CI_TRAFI_L',
-								style : new CUB.Style({
-									color : new CUB.Color('#FF1515')
-								})
-							});
-				});
-	}
-	
 	function mapRedraw() {
 		var dropdown = document.getElementById("chooseLine");
 		var lineName = dropdown.options[dropdown.selectedIndex].value;
@@ -69,7 +73,7 @@
 										+ '</Literal></PropertyIsEqualTo>'
 							});
 				});
-	}
+	};
 </script>
 
 <style>
@@ -101,6 +105,11 @@ body, html {
 			<div>
 				<button name="chooseVcub" id="chooseVcub" onclick="mapVcub()">SHOW
 					VCUB</button>
+			</div>
+			<div>
+				<a href="/phpProject/src/RechercheAdresse.php"><button
+						name="chooseVcub" id="chooseVcub" onclick="mapVcub()">SEARCH
+						ADDRESS</button></a>
 			</div>
 			<div class="form-item" id="edit-navitia-line-wrapper">
 				<label for="edit-navitia-line">Selectionner votre ligne </label> <select

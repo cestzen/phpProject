@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" href="jquery/jquery.mobile.icons-1.4.2.min.css" />
+<link rel="stylesheet"
+	href="jquery/jquery.mobile.structure-1.4.2.min.css" />
+<title>Carte simple</title>
+<script type="text/javascript"
+	src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=G0NDMI15J2"></script>
+
+<script type="text/javascript">
+	var abc;
+	CUB.ready(function() {
+		CUB.init('zone_carte');
+		abc = new CUB.Layer.Dynamic();
+	});
+
+	function mapVcub() {
+		abc.destroy();
+		CUB.ready(function() {
+			// Création de la couche
+
+			abc = new CUB.Layer.Dynamic('',
+					'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2', {
+						layerName : 'TB_STVEL_P',
+						style : new CUB.Style({
+							color : new CUB.Color('#FF1515')
+						})
+					});
+		});
+	}
+</script>
+
+<style>
+body, html {
+	margin: 0;
+	padding: 0;
+}
+
+#zone_carte {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+</style>
+</head>
+
+<body>
+	<div id="zone_carte" style="width: 80%; height: 100%; float: left;"></div>
+	<div id="sideMenu"
+		style="width: 20%; height: 50%; background-color: blue; float: right;">
+
+		<div id="navitia-line-ahah" class="navitia-ahah">
+			<div>
+				<button name="chooseVcub" id="chooseVcub" onclick="mapVcub()">SHOW
+					VCUB</button>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>
