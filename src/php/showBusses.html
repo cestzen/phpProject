@@ -16,6 +16,24 @@
 		abc = new CUB.Layer.Dynamic();
 	});
 
+	function mapTraffic() {
+		abc.destroy();
+		CUB
+				.ready(function() {
+					// Création de la couche
+
+					abc = new CUB.Layer.Dynamic(
+							'',
+							'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2',
+							{
+								layerName : 'CI_TRAFI_L',
+								style : new CUB.Style({
+									color : new CUB.Color('#FF1515')
+								})
+							});
+				});
+	}
+	
 	function mapRedraw() {
 		var dropdown = document.getElementById("chooseLine");
 		var lineName = dropdown.options[dropdown.selectedIndex].value;
@@ -29,6 +47,9 @@
 							'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2',
 							{
 								layerName : 'TB_CHEM_L',
+								style : new CUB.Style({
+									color : new CUB.Color('#3D1255')
+								}),
 								wfsFilter : '<PropertyIsEqualTo><PropertyName>NUMEXPLO</PropertyName><Literal>'
 										+ lineName
 										+ '</Literal></PropertyIsEqualTo>'
@@ -54,14 +75,16 @@ body, html {
 </head>
 
 <body>
-	<div id="zone_carte" border: 1px solid
-		black" style="width: 80%; height: 100%; float: left;"></div>
-	<div
+	<div id="zone_carte" style="width: 80%; height: 100%; float: left;"></div>
+	<div id="sideMenu"
 		style="width: 20%; height: 50%; background-color: blue; float: right;">
 
 		<div id="navitia-line-ahah" class="navitia-ahah">
-			<div class="form-item" id="edit-navitia-line-wrapper">
-				<label for="edit-navitia-line">Sélectionner votre ligne </label> <select
+		<div><button name="chooseTraffic" id="chooseTraffic" 
+					onclick="mapTraffic()">SHOW TRAFFIC</button></div>
+			<div class="form-item" id="edit-navitia-line-wrapper"> 
+				<label for="edit-navitia-line">Selectionner votre ligne </label> 
+				<select
 					name="chooseLine" id="chooseLine" class="form-select"
 					onchange="mapRedraw()"><option value="0"
 						selected="selected">Choisissez une ligne</option>
