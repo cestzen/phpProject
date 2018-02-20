@@ -1,14 +1,11 @@
-<?php
-// $url will contain the API endpoint
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>Carte simple - API CUB</title>
+<title>Exemple API CUB - Localisation sur adresse en WPS</title>
+<!-- NE PAS UTILISER LA CLE CI-DESSOUS. Formulaire de demande de clé : http//data.bordeaux-metropole.fr/key -->
 <script type="text/javascript"
-	src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	src="//data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
+
 <style type="text/css">
 .container {
 	background-color: white;
@@ -36,76 +33,31 @@ input {
 
 #input {
 	width: 200px;
-	margin: 7px 5px 0 0;
-}
-
-form.head>div, form.head>input {
-	float: left;
-}
-
-.loading {
-	background-image: url('jquery/images/ajax-loader.gif');
-	background-size: cover;
-	margin-top: 8px;
-	height: 16px;
-	width: 16px;
-	display: none;
 }
 </style>
 
 <script type="text/javascript">
-
-		var panel, wpsRecherche, wpsLocalisation, wfsLayer;
+		var panel, wpsRecherche, wpsLocalisation, wfsLayer, place;
 		var resultats = [];
 		
 		CUB.ready(function() {
-			CUB.init();
+			CUB.init();	
+
+			place = new CUB.Layer.Dynamic();		
+			
+			// Mire de chargement
+			new CUB.Panel.Loading();
 			
 			// Contenu HTML du Panel
 			var content = '<div class="container">'
-				+ 'Adresse sur la MÃ©tropole : <br/>'
-				+ '<form onsubmit="rechercherVoies(); return false;" class="head">'
-				+ '<input type="text" id="input"/>'
-				+ '<input type="button" id="btn" class="btn" value="Rechercher" onclick="rechercherVoies()"/>'
-				+ '<div class="loading" id="loading"></div>'
-				+ '<div>Rechercher dans <select id="restriction">'
-				+ '<option value="">Toute la MÃ©tropole</option>'
-				+ '<option value="33003">AmbarÃ¨s-et-Lagrave</option>'
-				+ '<option value="33004">AmbÃ¨s</option>'
-				+ '<option value="33013">Artigues-PrÃ¨s-Bordeaux</option>'
-				+ '<option value="33032">Bassens</option>'
-				+ '<option value="33039">BÃ¨gles</option>'
-				+ '<option value="33056">Blanquefort</option>'
-				+ '<option value="33063">Bordeaux</option>'
-				+ '<option value="33065">Bouliac</option>'
-				+ '<option value="33069">Le Bouscat</option>'
-				+ '<option value="33075">Bruges</option>'
-				+ '<option value="33096">Carbon-Blanc</option>'
-				+ '<option value="33119">Cenon</option>'
-				+ '<option value="33162">Eysines</option>'
-				+ '<option value="33167">Floirac</option>'
-				+ '<option value="33192">Gradignan</option>'
-				+ '<option value="33200">Le Haillan</option>'
-				+ '<option value="33249">Lormont</option>'
-				+ '<option value="33273">Martignas-sur-Jalle</option>'
-				+ '<option value="33281">MÃ©rignac</option>'
-				+ '<option value="33312">Parempuyre</option>'
-				+ '<option value="33318">Pessac</option>'
-				+ '<option value="33376">Saint-Aubin-de-MÃ©doc</option>'
-				+ '<option value="33434">Saint-Louis-de-Montferrand</option>'
-				+ '<option value="33449">Saint-MÃ©dard-en-Jalles</option>'
-				+ '<option value="33487">Saint-Vincent-de-Paul</option>'
-				+ '<option value="33519">Le Taillan-MÃ©doc</option>'
-				+ '<option value="33522">Talence</option>'
-				+ '<option value="33550">Villenave-d\'Ornon</option>'
-				+ '</select></div>'
-				+ '</form>'
+				+ 'Nom ou partie de nom d\'une voie, un arret TBC ou un equipement public de la CUB : <br/><input type="text" id="input"/>'
+				+ '<input type="button" class="btn" value="Rechercher" onclick="rechercherVoies()"/><br/>'
 				+ '<select id="voies_result" size="10" style="width: 400px"></select><br/>'
 				+ '<div id="results"></div>'
 				+ '<input type="button" value="Cadrer sur" onclick="localiser()"/><br/>'
 				+ '</div>';
 			
-			// Construction du panel de contrÃ´les
+			// Construction du panel de contrôles
 			panel = new CUB.Panel({
 				width: 450,
 				height: 300,
@@ -115,93 +67,169 @@ form.head>div, form.head>input {
 			});
 			
 			// Service de recherche de voie
-			wpsRecherche = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', {
-				process: 'geocodeur',
+			wpsRecherche = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', 'recherche_voie');
+			
+			// Service de recherche de cadrage sur une voie
+			wpsLocalisation = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', {
+				process: 'voie_par_identifiant',
 				style: new CUB.Style({
-					color: new CUB.Color('#FF0000')
+					outlineWidth: 5,
+					outlineColor: new CUB.Color('#ff0000')
 				})
 			});
 		});
 		
-		function setLoading(on)
-		{
-			var input = document.getElementById('input');
-			var btn = document.getElementById('btn');
-			var loading = document.getElementById('loading');
-			if(on)
-			{
-				loading.style.display = 'block';
-				input.disabled = true;
-				btn.disabled = true;
-			}else{
-				loading.style.display = 'none';
-				input.disabled = false;
-				btn.disabled = false;
-			}
-		}
-		
 		function rechercherVoies()
 		{
-			var start = new Date();
-			setLoading(true);			
-			
-			// On rÃ©cupÃ¨re la liste dÃ©roulante
+			// On récupère la liste déroulante
 			var input = document.getElementById('input');
 			
-			// ParamÃ¨tres Ã  passer au serveur WPS (ici "input")
+			// Paramètres à passer au serveur WPS (ici "input")
 			var params = { 
-				input: input.value,
-				commune: $('#restriction').val()
+				input: input.value
 			};
 			
 			// Lancement du traitement
-			wpsRecherche.execute(params, function(res) { // Fonction appelÃ©e dÃ¨s le traitement terminÃ©
-				setLoading(false);
-				
-				// Mise Ã  jour de la liste avec les rÃ©sultats
+			wpsRecherche.execute(params, function(res) { // Fonction appelée dès le traitement terminé
+				// Mise à jour de la liste avec les résultats
 				var list = document.getElementById('voies_result');
 				list.options.length = 0;
-				
-				if(res.result)
+
+				if(!res.result)
 				{
-					// Nombre de rÃ©sultats trouvÃ©s
-					document.getElementById('results').innerHTML = 'RÃ©sultats trouvÃ©s : ' + res.result.length + ' en ' + ((new Date() - start) / 1000) + 's';
+					document.getElementById('results').innerHTML = '0 résultat trouvé';
+					return;
+				}
+			
+				// Nombre de résultats trouvés
+				document.getElementById('results').innerHTML = 'Resultats : ' + res.result.length;
 				
-					for(var i in res.result)
+				for(var i in res.result)
+				{
+					// Type de résultat
+					var type = 'Inconnu';
+					switch(res.result[i].attributes.ORIGINE)
 					{
-						var libelle = (res.result[i].attributes.NUMERO + res.result[i].attributes.REP + ' ' + res.result[i].attributes.NOM_VOIE).trim();
-						list.options[list.options.length] = new Option(libelle + ' ' + res.result[i].attributes.CODE_POSTAL + ' ' + res.result[i].attributes.COMMUNE + ' (pertinence : ' + 
-								res.result[i].attributes.PERTINENCE + '%)', resultats.length /* Indice dans le tableau */, false, false);
-								
-						resultats.push(res.result[i]);
+						case 'FV_VOIE_A':
+							type = 'Nom de voie';
+							break;
+						case 'TB_ARRET_P':
+							type = 'Arret TBC';
+							break;
+					}				
+					if(type != 'Inconnu'){
+					list.options[list.options.length] = new Option(res.result[i].attributes.NOM + ' - ' + res.result[i].attributes.COMMUNE + ' (pertinence : ' + 
+							res.result[i].attributes.PERTINENCE + '%) - ' + type, resultats.length /* Indice dans le tableau */, false, false);
+							
+					resultats.push(res.result[i]);
 					}
-				}else
-					document.getElementById('results').innerHTML = 'Aucun rÃ©sultat trouvÃ©';
-			}, function() {
-				setLoading(false);
-				document.getElementById('results').innerHTML = 'Erreur inconnue';
+				}
 			});
 		}
 		
 		function localiser()
 		{
-			// On rÃ©cupÃ¨re la liste des rÃ©sultats
+			// On récupère la liste des résultats
 			var list = document.getElementById('voies_result');
 			
-			// Aucune rue sÃ©lectionnÃ©e ?
+			// Aucune rue sélectionnée ?
 			if(list.selectedIndex < 0)
 				return;
 			
 			var resultat = resultats[list.options[list.selectedIndex].value];
+			place.destroy();
+			place = new CUB.Layer.Dynamic(
+					'',
+					'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2',
+					{
+						layerName : 'TB_ARRET_P',
+						style : new CUB.Style({
+							color : new CUB.Color('#4E32A7')
+						}),
+						wfsFilter : '<PropertyIsEqualTo><PropertyName>VILLE</PropertyName><Literal>'+resultat.attributes.COMMUNE.toUpperCase()+'</Literal></PropertyIsEqualTo>'
+						, 
+						selectable : true
+					});
+
+			// Évènement déclenché à la sélection d'un objet (entité)
+			place.onSelect = function(entity) 
+			{
+				alert('Ville ' + entity.attributes.VILLE.toLowerCase());
+			}
 			
-			resultat.zoomTo(1000);
+			if(wfsLayer)
+				wfsLayer.destroy();
+			wpsLocalisation.removeAll();
+				
+			switch(resultat.attributes.ORIGINE)
+			{	
+				case 'FV_VOIE_A':
+					localiser_voie_wps(resultat.attributes.IDENT);
+					break;
+				case 'TB_ARRET_P':
+					localiser_objet_wfs(resultat.attributes.ORIGINE, resultat.attributes.IDENT);
+					break;
+			}
 		}
-		//-->
+
+		function localiser_objet_wfs(origin, ident)
+		{
+			var filter = '&FILTER=<Filter><PropertyIsEqualTo><PropertyName>IDENT</PropertyName><Literal>' + ident + '</Literal></PropertyIsEqualTo></Filter>';
+				
+			wfsLayer = new CUB.Layer.Dynamic(null, '//data.bordeaux-metropole.fr/wfs?key=QHUHHRI7HD' /* NE PAS UTILISER CETTE CLE */ + filter, {
+				layerName: origin,
+				attributes: null,
+				loadAllAtOnce: true,
+				style: new CUB.Style({
+					color: new CUB.Color('#FF0000'),
+					outlineColor: new CUB.Color('#FF0000'),
+					size: 15
+				}),
+				onLoadEnd: function(entities) {
+					// On récupère les entités
+					entites = this.getEntities();
+				
+					var point = entites[0].getBarycenter();
+					
+					// On cadre sur l'objet
+					CUB.moveToPoint(point, 5000);
+				}
+			});
+		}
+		
+		function localiser_voie_wps(ident)
+		{			
+			// Paramètres à passer au serveur WPS (ici "ident" qui est l'identifiant de la voie)
+			var params = { 
+				ident: ident
+			};
+			
+			// Lancement du traitement
+			wpsLocalisation.execute(params, function(res) {
+				// On récupère les entités
+				entites = this.getEntities();
+				
+				if(entites.length == 0) // Pas de géométrie
+				{
+					alert('Impossible de se localiser sur la voie : celle-ci n\'a pas de géométrie');
+					return;
+				}
+				
+				// On prend l'étendue de la première
+				var extent = entites[0].getExtent();
+				
+				// Et on ajoute les étendues des suivantes
+				for(var i = 1; i < entites.length; ++i)
+					extent.add(entites[i].getExtent());
+					
+				// On cadre sur cette étendue globale, qui contient toutes les entités
+				CUB.moveToExtent(extent);
+			});
+		}
 	</script>
 </head>
 <body>
-	<div id="zone_carte"
-		style="width: 500px; height: 500px; border: 1px solid black"></div>
-	<div id="right_panel"></div>
+
+
 </body>
 </html>
