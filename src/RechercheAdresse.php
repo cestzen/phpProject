@@ -2,9 +2,8 @@
 <html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>Exemple API CUB - Localisation sur adresse en WPS</title>
-<!-- NE PAS UTILISER LA CLE CI-DESSOUS. Formulaire de demande de clé : http//data.bordeaux-metropole.fr/key -->
 <script type="text/javascript"
-	src="//data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
+	src="//data.bordeaux-metropole.fr/api/cub.xjs?key=G0NDMI15J2"></script>
 
 <style type="text/css">
 .container {
@@ -54,7 +53,9 @@ input {
 				+ '<input type="button" class="btn" value="Rechercher" onclick="rechercherVoies()"/><br/>'
 				+ '<select id="voies_result" size="10" style="width: 400px"></select><br/>'
 				+ '<div id="results"></div>'
-				+ '<input type="button" value="Cadrer sur" onclick="localiser()"/><br/>'
+				+ '<input type="button" value="Cadrer sur" onclick="localiser()"/>'
+				+ '<a href="/phpProject/src/php/showBusses.html"><input type="button"'
+				+ ' value="Retourner aux services" </a><br/>'
 				+ '</div>';
 			
 			// Construction du panel de contrôles
@@ -67,10 +68,10 @@ input {
 			});
 			
 			// Service de recherche de voie
-			wpsRecherche = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', 'recherche_voie');
+			wpsRecherche = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=G0NDMI15J2', 'recherche_voie');
 			
 			// Service de recherche de cadrage sur une voie
-			wpsLocalisation = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', {
+			wpsLocalisation = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=G0NDMI15J2', {
 				process: 'voie_par_identifiant',
 				style: new CUB.Style({
 					outlineWidth: 5,
@@ -176,7 +177,7 @@ input {
 		{
 			var filter = '&FILTER=<Filter><PropertyIsEqualTo><PropertyName>IDENT</PropertyName><Literal>' + ident + '</Literal></PropertyIsEqualTo></Filter>';
 				
-			wfsLayer = new CUB.Layer.Dynamic(null, '//data.bordeaux-metropole.fr/wfs?key=QHUHHRI7HD' /* NE PAS UTILISER CETTE CLE */ + filter, {
+			wfsLayer = new CUB.Layer.Dynamic(null, '//data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2' /* NE PAS UTILISER CETTE CLE */ + filter, {
 				layerName: origin,
 				attributes: null,
 				loadAllAtOnce: true,
