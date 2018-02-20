@@ -1,89 +1,87 @@
-<?php
-// $url will contain the API endpoint
-
-?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-	<title>Carte simple - API CUB</title>
-	<script type="text/javascript" src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
-	<script src="js/tools.js"></script>
-	<script src="https://data.bordeaux-metropole.fr/dev/exemples/jquery/jquery-1.11.0.min.js"></script>
-	<script src="https://data.bordeaux-metropole.fr/dev/exemples/jquery/jquery.mobile-1.4.2.js"></script>
-	
-	<style>
-		.CUB_Spit {
-			width: 350px !important;
-		}
-		
-		#legend img {
-			vertical-align: bottom;
-			width: 32px;
-		}
-		
-		#reload {
-			margin-bottom: 10px;
-		}
-		
-		#fares {
-			margin-top: 10px;
-			clear: both;
-		}
-		
-		.line_ico {
-			vertical-align: middle;
-			height: 24px;
-		}
-		
-		.copyright {
-			bottom: 5px;
-			font-size: 12px;
-			position: absolute;
-			text-align: center;
-			width: 90%;
-		}
-		
-		img.bus_icon {
-			float: left;
-		}
-		
-		#svg_legend {
-			
-		}
-		
-		#svg_legend > svg {
-			float: left;
-			width: 40px;
-		}
-		
-		#svg_legend > div {
-			float: left;
+<head>
+<title>SAEIV Tram &amp; Bus - Lignes en temps réel</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<link rel="stylesheet" href="jquery/jquery.mobile.icons-1.4.2.min.css" />
+<link rel="stylesheet"
+	href="jquery/jquery.mobile.structure-1.4.2.min.css" />
+<link rel="stylesheet" href="jquery/theme_jqm.css" />
+<script src="js/tools.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<style>
+.CUB_Spit {
+	width: 350px !important;
+}
 
-		}
-	</style>
-	
-	<script type="text/javascript" src="//data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
+#legend img {
+	vertical-align: bottom;
+	width: 32px;
+}
 
-	<script type="text/javascript">		
+#reload {
+	margin-bottom: 10px;
+}
+
+#fares {
+	margin-top: 10px;
+	clear: both;
+}
+
+.line_ico {
+	vertical-align: middle;
+	height: 24px;
+}
+
+.copyright {
+	bottom: 5px;
+	font-size: 12px;
+	position: absolute;
+	text-align: center;
+	width: 90%;
+}
+
+img.bus_icon {
+	float: left;
+}
+
+#svg_legend {
+	
+}
+
+#svg_legend>svg {
+	float: left;
+	width: 40px;
+}
+
+#svg_legend>div {
+	float: left;
+}
+</style>
+
+<script type="text/javascript"
+	src="//data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
+
+<script type="text/javascript">		
 		<!--
 		
 		var SAEIV = {
 			// Lignes
 			wpsLines: null,
 			
-			// ArrÃªts
+			// Arrêts
 			wpsStops: null,
 			
-			// TronÃ§ons
+			// Tronçons
 			wpsSections: null,
 			
-			// VÃ©hicules
+			// Véhicules
 			wfsVehicles: null,
 			
-			// Horaires Ã  l'arrÃªt
+			// Horaires à l'arrêt
 			wpsStopTimes: null,
 			
-			// Correspondances Ã  l'arrÃªt
+			// Correspondances à l'arrêt
 			wpsStopCorres: null,
 			corresData: null,
 			
@@ -92,7 +90,7 @@
 			statInterval: null,
 			
 			init: function() {
-				// Panel latÃ©ral
+				// Panel latéral
 				$('#right_panel').enhanceWithin().panel({
 					close: function() {
 						$(this).panel('open');
@@ -100,8 +98,9 @@
 				})
 				$('#right_panel').panel('open');
 				
+				loading = new CUB.Panel.Loading();
 				
-				// Ã‰vÃ©nements sur les contrÃ´les
+				// Événements sur les contrôles
 				$('#cboLines').change(SAEIV.onSelectLine);
 				$('#panWay').change(SAEIV.onSelectWay);
 				
@@ -115,19 +114,19 @@
 					process: 'SV_LIGNE_A'
 				});
 				
-				// TronÃ§ons
+				// Tronçons
 				SAEIV.wpsSections = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', {
 					process: 'saeiv_troncons_sens',
-					style: new CUB.Style({ // Style par dÃ©faut
+					style: new CUB.Style({ // Style par défaut
 						color: new CUB.Color('#0011ee'),
 					outlineWidth: 3
 					})
 				});
 				
-				// ArrÃªts
+				// Arrêts
 				SAEIV.wpsStops = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', {
 					process: 'saeiv_arrets_sens',
-					style: new CUB.Style({ // Style par dÃ©faut
+					style: new CUB.Style({ // Style par défaut
 						color: new CUB.Color('#ff1111')
 					}),
 					selectable: true,
@@ -138,7 +137,7 @@
 					onSelect: SAEIV.onSelectStop
 				});
 				
-				// Horaires Ã  un arrÃªt
+				// Horaires à un arrêt
 				SAEIV.wpsStopTimes = new CUB.Layer.Processing('', '//data.bordeaux-metropole.fr/wps?key=QHUHHRI7HD', {
 					process: 'SV_HORAI_A'
 				});
@@ -154,6 +153,8 @@
 			
 			// Chargement des lignes
 			loadLines: function() {
+				loading.setText('Chargement des lignes...');
+				loading.enable();
 				
 				SAEIV.wpsLines.execute({
 					filter: '<Filter><PropertyIsEqualTo><PropertyName>ACTIVE</PropertyName><Literal>1</Literal></PropertyIsEqualTo></Filter>'
@@ -161,20 +162,20 @@
 			},
 			
 			showSpit: function(spit_attributes, position) {
-				// On supprime tous les Spits de la carte (le cas Ã©chÃ©ant)
+				// On supprime tous les Spits de la carte (le cas échéant)
 				SAEIV.spitSet.removeAll();
 
-				// On crÃ©e un Spit Ã  la position de l'entitÃ©, et on le renseigne avec les attributs
+				// On crée un Spit à la position de l'entité, et on le renseigne avec les attributs
 				var spit = SAEIV.spitSet.createSpit(position);
 				spit.attributes = spit_attributes;
 
-				// NÃ©cessaire pour que le Spit s'affiche correctement
+				// Nécessaire pour que le Spit s'affiche correctement
 				SAEIV.spitSet.redraw();
 			},
 			
 			updateStats: function() {
 				var count = SAEIV.wfsVehicles.getEntities().length;
-				$('#stats').html(count + ' vÃ©hicules sur le sens');
+				$('#stats').html(count + ' véhicules sur le sens');
 				
 				if(SAEIV.statInterval)
 					clearInterval(SAEIV.statInterval);
@@ -209,7 +210,7 @@
 						return 'Tramway court';
 						
 					default: 
-						return 'VÃ©hicule';
+						return 'Véhicule';
 				}
 			},
 			
@@ -230,8 +231,8 @@
 				}
 			},
 			
-			// Ã‰vÃ©nements
-			// RÃ©ponse au chargement des lignes
+			// Événements
+			// Réponse au chargement des lignes
 			onLinesLoad: function(response) {
 				$('#cboLines option[value]').remove();
 					
@@ -243,11 +244,12 @@
 					$('#cboLines').append('<option value="' + lines[i].GID + '">' + lines[i].LIBELLE + '</option>');
 				$('#cboLines').selectmenu('refresh');
 								
+				loading.disable();
 			},
 			
-			// SÃ©lection d'une ligne
+			// Sélection d'une ligne
 			onSelectLine: function() {
-				// Suppression de tout ce qui peut Ãªtre affichÃ©
+				// Suppression de tout ce qui peut être affiché
 				SAEIV.reset();
 				
 				// Affichage aller / retour
@@ -257,25 +259,25 @@
 				$('input[name="optWay"]').checkboxradio('refresh');
 			},
 			
-			// SÃ©lection d'un sens
+			// Sélection d'un sens
 			onSelectWay: function() {
 				var sens = 'ALLER';
 				if($('input[name="optWay"]:checked').val() === 'return')
 					sens = 'RETOUR';
 				
-				// On charge les arrÃªts de la ligne
+				// On charge les arrêts de la ligne
 				SAEIV.wpsStops.execute({
 					GID: $('#cboLines').val(),
 					SENS: sens
-				}, null, function() { alert('Ã‰chec du chargement des arrÃªts'); });
+				}, null, function() { alert('Échec du chargement des arrêts'); });
 				
-				// On charge les tronÃ§ons de la ligne
+				// On charge les tronçons de la ligne
 				SAEIV.wpsSections.execute({
 					GID: $('#cboLines').val(),
 					SENS: sens
-				}, null, function() { alert('Ã‰chec du chargement des tronÃ§ons'); });
+				}, null, function() { alert('Échec du chargement des tronçons'); });
 				
-				// Les vÃ©hicules
+				// Les véhicules
 				if(SAEIV.wfsVehicles)
 					SAEIV.wfsVehicles.destroy();
 				
@@ -286,8 +288,8 @@
 						'<PropertyIsEqualTo><PropertyName>SENS</PropertyName><Literal>' + sens + '</Literal></PropertyIsEqualTo></AND>',
 					refreshInterval: 10000,
 					selectable: true,
-					style: new CUB.Style({ // Style par dÃ©faut
-						symbol: 'https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/saeiv_bus_ok.png',
+					style: new CUB.Style({ // Style par défaut
+						symbol: 'samples/saeiv/saeiv_bus_ok.png',
 						symbolRotation: '${GEOM_O}',				
 						symbolRotationIsGeo: true,
 						opacity: 100,
@@ -302,20 +304,20 @@
 						{
 							style.symbolRotation = 90;
 							style.size = 14;
-							style.symbol = 'https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/saeiv_bus_bloque.png';
+							style.symbol = 'samples/saeiv/saeiv_bus_bloque.png';
 						}
 						else if(entity.attributes.ETAT == 'AVANCE')
-							style.symbol = 'https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/saeiv_bus_avance.png';
+							style.symbol = 'samples/saeiv/saeiv_bus_avance.png';
 						else if(entity.attributes.ETAT == 'RETARD')
-							style.symbol = 'https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/saeiv_bus_retard.png';
+							style.symbol = 'samples/saeiv/saeiv_bus_retard.png';
 						
-						// A l'heure : on ne fait rien (symbole par dÃ©faut)
+						// A l'heure : on ne fait rien (symbole par défaut)
 					},
 					onSelect: SAEIV.onSelectVehicle
 				});
 			},
 			
-			// SÃ©lection d'un arrÃªt
+			// Sélection d'un arrêt
 			onSelectStop: function(entity) {
 				SAEIV.corresData = null;
 				SAEIV.wpsStopCorres.execute({
@@ -324,7 +326,7 @@
 					SAEIV.corresData = reponse.result;
 				});
 				
-				// On charge les horaires de l'arrÃªt
+				// On charge les horaires de l'arrêt
 				SAEIV.wpsStopTimes.execute({
 					filter: '<Filter><PropertyIsEqualTo ><PropertyName>RS_SV_ARRET_P</PropertyName><Literal>' + entity.attributes.GID + '</Literal></PropertyIsEqualTo></Filter>',
 					propertyname: ['HOR_REAL', 'HOR_APP', 'RS_SV_COURS_A', 'ETAT', 'TYPE']
@@ -333,7 +335,7 @@
 					
 					// On cherche les horaires pour notre chemin
 					$(response.result).each(function(idx, rec) {
-						var hor = Date.fromString(rec.attributes.HOR_REAL || rec.attributes.HOR_APP); // On prend le thÃ©orique si l'horaire estimÃ©e n'existe pas
+						var hor = Date.fromString(rec.attributes.HOR_REAL || rec.attributes.HOR_APP); // On prend le théorique si l'horaire estimée n'existe pas
 						
 						if(hor >= (new Date()).setMinutes((new Date()).getMinutes() - 5) &&
 							hor <= (new Date()).setMinutes((new Date()).getMinutes() + 30))
@@ -345,7 +347,7 @@
 						return Date.fromString(a.attributes.HOR_APP) - Date.fromString(b.attributes.HOR_APP)
 					});
 					
-					// Construction du rÃ©sultat
+					// Construction du résultat
 					var res = '';
 					var cnt = 0;
 					for(var i in horaires)
@@ -376,7 +378,7 @@
 						/*if(horaires[i].attributes.TYPE == 'DEVIATION')
 							time + '<span color="#EE8000">' + time + '</span>';*/
 							
-						res += '<div><img src="https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/lignes/' + $('#cboLines').val() + '.png" class="line_ico"/> ' + time + '</div>';
+						res += '<div><img src="samples/saeiv/lignes/' + $('#cboLines').val() + '.png" class="line_ico"/> ' + time + '</div>';
 						cnt++;
 						
 						if(cnt > 2)
@@ -384,8 +386,8 @@
 					}
 					
 					SAEIV.showSpit({
-						title: '<img src="https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/lignes/' + $('#cboLines').val() + '.png" class="line_ico"/> ArrÃªt ' + entity.attributes.LIBELLE, // + ' ' + entity.attributes.GID,
-						content: (res ? '<h3>Prochains passages :</h3>' + res + '<br/>* Horaires thÃ©oriques' : 'Pas de passages prÃ©vus prochainement pour cette ligne' ) + '<br/><div id="corres">Chargement des correspondances...</div>'
+						title: '<img src="samples/saeiv/lignes/' + $('#cboLines').val() + '.png" class="line_ico"/> Arrêt ' + entity.attributes.LIBELLE, // + ' ' + entity.attributes.GID,
+						content: (res ? '<h3>Prochains passages :</h3>' + res + '<br/>* Horaires théoriques' : 'Pas de passages prévus prochainement pour cette ligne' ) + '<br/><div id="corres">Chargement des correspondances...</div>'
 					}, entity.geometry().toPosition());
 					
 					// Chargement des correspondances
@@ -402,17 +404,17 @@
 			onCorresLoad: function() {
 				var lines = []; // Liste des GID des lignes
 				var res = '';
-				lines[$('#cboLines').val()] = true; // On remet pas la ligne elle-mÃªme
+				lines[$('#cboLines').val()] = true; // On remet pas la ligne elle-même
 				
 				for(var i in SAEIV.corresData)
 				{
 					var corres = SAEIV.corresData[i];
-					if(lines[corres.attributes.RS_SV_LIGNE_A] /* DÃ©jÃ  listÃ© */)
+					if(lines[corres.attributes.RS_SV_LIGNE_A] /* Déjà listé */)
 						continue;
 					
 					lines[corres.attributes.RS_SV_LIGNE_A] = true;
 					
-					var hor_theo = corres.attributes.HOR_REAL ? false : true; // True si on a juste l'horaire thÃ©orique
+					var hor_theo = corres.attributes.HOR_REAL ? false : true; // True si on a juste l'horaire théorique
 					var hor = Date.fromString(hor_theo ? corres.attributes.HOR_APP : corres.attributes.HOR_REAL);
 					
 					var remaining = parseInt((hor - new Date()) / 1000);
@@ -422,29 +424,29 @@
 					else
 						remaining = parseInt(remaining / 60) + 'min';
 				
-					res += '<div><img src="https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/lignes/' + corres.attributes.RS_SV_LIGNE_A + '.png" class="line_ico"/> ' +
-						'ArrÃªt ' + corres.attributes.ARRET_LIBELLE + ' (Ã  ' + corres.attributes.DIST + 'm) : ' + hor.getHours() + ':' + (hor.getMinutes() + '').padleft(2) + ':' + 
+					res += '<div><img src="samples/saeiv/lignes/' + corres.attributes.RS_SV_LIGNE_A + '.png" class="line_ico"/> ' +
+						'Arrêt ' + corres.attributes.ARRET_LIBELLE + ' (à ' + corres.attributes.DIST + 'm) : ' + hor.getHours() + ':' + (hor.getMinutes() + '').padleft(2) + ':' + 
 						(hor.getSeconds() + '').padleft(2) + (hor_theo ? '*' : '') + ' (' + remaining + ')</div>';
 				}
 				
 				if(res)
-					res = '<h3>Correspondances sur cet arrÃªt :</h3>' + res;
+					res = '<h3>Correspondances sur cet arrêt :</h3>' + res;
 				else
-					res = '<b>Pas de correspondances Ã  cet arrÃªt</b>';
+					res = '<b>Pas de correspondances à cet arrêt</b>';
 
 				$('#corres').html(res);
 			},
 			
-			// SÃ©lection d'un vÃ©hicule
+			// Sélection d'un véhicule
 			onSelectVehicle: function(entity) {
-				// Ã‰tat
+				// État
 				var etat = '';
 				if(entity.attributes.ETAT == 'AVANCE')
 					etat = 'En avance';
 				else if(entity.attributes.ETAT == 'RETARD')
 					etat = 'En retard';
 				else if(entity.attributes.ETAT == 'HEURE')
-					etat = 'Ã€ l\'heure';
+					etat = 'À l\'heure';
 				else
 					etat = 'Inconnu';
 				
@@ -458,22 +460,22 @@
 				if(entity.attributes.RETARD < 0)
 					str_retard = '-' + str_retard;
 				
-				// IcÃ´nes
+				// Icônes
 				var icons = '';
 				
 				if(entity.attributes.SAE == 1)
-					icons += '<img class="bus_icon" src="https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/bus_sae.png" title="VÃ©hicule Ã©quipÃ© de SAE"/>';
+					icons += '<img class="bus_icon" src="samples/saeiv/bus_sae.png" title="Véhicule équipé de SAE"/>';
 				if(entity.attributes.PMR == 1)
-					icons += '<img class="bus_icon" src="https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/bus_pmr.png" title="AccÃ¨s PMR"/>';
+					icons += '<img class="bus_icon" src="samples/saeiv/bus_pmr.png" title="Accès PMR"/>';
 				if(entity.attributes.ARRET == 1)
-					icons += '<img class="bus_icon" src="https://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/bus_stop.png" title="VÃ©hicule arrÃªtÃ© Ã  un arrÃªt"/>';
+					icons += '<img class="bus_icon" src="samples/saeiv/bus_stop.png" title="Véhicule arrêté à un arrêt"/>';
 				if(entity.attributes.BLOQUE == 1 || entity.attributes.NEUTRALISE == 1)
-					icons += '<img class="bus_icon" src="shttps://data.bordeaux-metropole.fr/dev/exemples/samples/saeiv/bus_warning.png" title="VÃ©hicule bloquÃ© ou neutralisÃ©"/>';
+					icons += '<img class="bus_icon" src="samples/saeiv/bus_warning.png" title="Véhicule bloqué ou neutralisé"/>';
 				
 				SAEIV.showSpit({ 
 					title: SAEIV.getVehicleType(entity.attributes.TYPE),
 					content: '<table><tr><td><b>Destination :</b></td><td>' + entity.attributes.TERMINUS + '</td></tr>' +
-						'<tr><td>Ã‰tat :</td><td>' + etat + '</td></tr>' +
+						'<tr><td>État :</td><td>' + etat + '</td></tr>' +
 						'<tr><td>Retard :</td><td>' + str_retard + '</td></tr>' +
 						'<tr><td>Vitesse :</td><td>' + entity.attributes.VITESSE + ' km/h</td></tr></table>' +
 						icons + '<div style="clear: both"></div>'
@@ -481,7 +483,7 @@
 			}
 		};
 		
-		// Cette fonction est dÃ©clenchÃ©e une fois le navigateur prÃªt
+		// Cette fonction est déclenchée une fois le navigateur prêt
 		CUB.ready(function() {
 			// Initialise l'API
 			CUB.init('map', {
@@ -499,24 +501,59 @@
 		-->
 	</script>
 </head>
-	<body>
-	<div id="map" style="width: 100%; height: 100%;"></div>
-	<div id="right_panel" data-role="panel" data-display="overlay" data-position="right" 
-		data-theme="b" data-dismissible="false">
+<body>
+	<div id="map" style="width: 100%; height: 100%; position: absolute;"></div>
+	<div id="right_panel" data-role="panel" data-display="overlay"
+		data-position="right" data-theme="b" data-dismissible="false">
 
-		<label for="cboLines">Lignes TBC :</label>
-		<select style="color:green;" id="cboLines" data-iconpos="left" data-native-menu="true">
-			<option>SÃ©lectionner une ligne</option>
+		<label for="cboLines">Lignes TBC :</label> <select id="cboLines"
+			data-iconpos="left" data-native-menu="false">
+			<option>Sélectionner une ligne</option>
 		</select>
+
+		<fieldset data-role="controlgroup" id="panWay" style="display: none">
+			<legend>Sens :</legend>
+			<input name="optWay" id="optWaySingle" value="single"
+				checked="checked" type="radio"> <label for="optWaySingle">Aller</label>
+				<input name="optWay" id="optWayReturn" value="return" type="radio">
+					<label for="optWayReturn">Retour</label>
 		
-        <fieldset data-role="controlgroup" id="panWay" style="display: none">
-        <legend>Sens :</legend>
-			<input name="optWay" id="optWaySingle" value="single" checked="checked" type="radio">
-			<label for="optWaySingle">Aller</label>
-			<input name="optWay" id="optWayReturn" value="return" type="radio">
-			<label for="optWayReturn">Retour</label>
 		</fieldset>
-		
+
+		<div id="legend">
+			<div id="stats"></div>
+			<div>
+				<img src="samples/saeiv/saeiv_bus_ok.png"> Véhicule à l'heure
+			
+			</div>
+			<div>
+				<img src="samples/saeiv/saeiv_bus_avance.png"> Véhicule en avance
+			
+			</div>
+			<div>
+				<img src="samples/saeiv/saeiv_bus_retard.png"> Véhicule en retard
+			
+			</div>
+			<div id="svg_legend">
+				<svg> <circle cx="15" cy="30" r="5" fill="#FF1111"
+					fill-opacity="0.4" stroke="#FF1111" stroke-opacity="1"
+					stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+					stroke-dasharray="none"></circle> </svg>
+				<div>
+					<br />Arrêt
+				</div>
+			</div>
+			<div id="fares"></div>
+		</div>
+
+		<div class="copyright">
+			<div id="reload">
+				<img src="samples/loading_very_small_white.gif" /> Rafaîchissement
+				dans <span></span>
+			</div>
+			Données, services et API de <a
+				href="http://data.bordeaux-metropole.fr" target="_blank">http://data.bordeaux-metropole.fr</a>
+		</div>
 	</div>
-	</body>
+</body>
 </html>

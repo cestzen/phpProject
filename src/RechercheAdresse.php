@@ -1,65 +1,60 @@
 <?php
 // $url will contain the API endpoint
-
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-	<title>Carte simple - API CUB</title>
-	<script type="text/javascript" src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<style type="text/css">
-		.container
-		{
-			background-color: white;
-			padding:10px; 
-			border: 1px solid #ccc;
-		}
-		
-		#results
-		{
-			width: 300px; 
-			height: 20px;
-		}
-		
-		#voies_result
-		{
-			font-size: 10px;
-			margin-top: 10px;
-		}
-		
-		.btn
-		{
-			margin: 5px
-		}
-		
-		input
-		{
-			font-size: 10px;
-		}
-		
-		#input
-		{
-			width: 200px;
-			 margin: 7px 5px 0 0;
-		}
-		
-		form.head > div, form.head > input {
-			float: left;
-		}
-		
-		.loading {
-			background-image: url('jquery/images/ajax-loader.gif');
-			background-size: cover;
-			margin-top: 8px;
-			height: 16px;
-			width: 16px;
-			display: none;
-		}
-	</style>
-	
-	<script type="text/javascript">
-		<!--
+<head>
+<title>Carte simple - API CUB</title>
+<script type="text/javascript"
+	src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<style type="text/css">
+.container {
+	background-color: white;
+	padding: 10px;
+	border: 1px solid #ccc;
+}
+
+#results {
+	width: 300px;
+	height: 20px;
+}
+
+#voies_result {
+	font-size: 10px;
+	margin-top: 10px;
+}
+
+.btn {
+	margin: 5px
+}
+
+input {
+	font-size: 10px;
+}
+
+#input {
+	width: 200px;
+	margin: 7px 5px 0 0;
+}
+
+form.head>div, form.head>input {
+	float: left;
+}
+
+.loading {
+	background-image: url('jquery/images/ajax-loader.gif');
+	background-size: cover;
+	margin-top: 8px;
+	height: 16px;
+	width: 16px;
+	display: none;
+}
+</style>
+
+<script type="text/javascript">
+
 		var panel, wpsRecherche, wpsLocalisation, wfsLayer;
 		var resultats = [];
 		
@@ -204,8 +199,9 @@
 		//-->
 	</script>
 </head>
-	<body>
-	<div id="zone_carte" style="width: 500px; height: 500px; border: 1px solid black"></div>
-	<div id="right_panel" ></div>
-	</body>
+<body>
+	<div id="zone_carte"
+		style="width: 500px; height: 500px; border: 1px solid black"></div>
+	<div id="right_panel"></div>
+</body>
 </html>

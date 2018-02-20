@@ -21,7 +21,7 @@
 		CUB.init("zone_carte");
 		var statique = new CUB.Layer.Static("Ma couche statique",
 				"http://data.bordeaux-metropole.fr/wms?key=QHUHHRI7HD", [
-						"TB_PARCR_P", "TB_CHEM_L", "CI_PARK_P" ]);
+						"TB_CHEM_L"]);
 		var dynamique = new CUB.Layer.Dynamic("Ma couche dynamique",
 				"http://data.bordeaux-metropole.fr/wfs?key=QHUHHRI7HD", {
 					layerName : "TB_STVEL_P"

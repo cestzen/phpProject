@@ -1,0 +1,30 @@
+<script src="https://www.w3schools.com/lib/w3.js"></script>
+<div w3-include-html="html/tramlines.html"></div>
+<script>
+	w3.includeHTML();
+</script>
+<script type="text/javascript"
+	src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=QHUHHRI7HD"></script>
+<script src="js/tools.js"></script>
+<script
+	src="https://data.bordeaux-metropole.fr/dev/exemples/jquery/jquery-1.11.0.min.js"></script>
+<script
+	src="https://data.bordeaux-metropole.fr/dev/exemples/jquery/jquery.mobile-1.4.2.js"></script>
+<div id="right_panel" data-role="panel" data-display="overlay"
+	data-position="right" data-theme="b" data-dismissible="false">
+
+	<label for="cboLines">Lignes TBC :</label> <select
+		style="color: green;" id="cboLines" data-iconpos="left"
+		data-native-menu="true">
+		<option>Sélectionner une ligne</option>
+	</select>
+
+	<fieldset data-role="controlgroup" id="panWay" style="display: none">
+		<legend>Sens :</legend>
+		<input name="optWay" id="optWaySingle" value="single"
+			checked="checked" type="radio"> <label for="optWaySingle">Aller</label>
+		<input name="optWay" id="optWayReturn" value="return" type="radio">
+		<label for="optWayReturn">Retour</label>
+	</fieldset>
+
+</div>

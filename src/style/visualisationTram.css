@@ -1,0 +1,47 @@
+.CUB_Spit {
+	width: 350px !important;
+}
+
+#legend img {
+	vertical-align: bottom;
+	width: 32px;
+}
+
+#reload {
+	margin-bottom: 10px;
+}
+
+#fares {
+	margin-top: 10px;
+	clear: both;
+}
+
+.line_ico {
+	vertical-align: middle;
+	height: 24px;
+}
+
+.copyright {
+	bottom: 5px;
+	font-size: 12px;
+	position: absolute;
+	text-align: center;
+	width: 90%;
+}
+
+img.bus_icon {
+	float: left;
+}
+
+#svg_legend {
+	
+}
+
+#svg_legend>svg {
+	float: left;
+	width: 40px;
+}
+
+#svg_legend>div {
+	float: left;
+}

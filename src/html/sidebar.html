@@ -1,3 +1,4 @@
+<script src="https://www.w3schools.com/lib/w3.js"></script>
 <link rel="stylesheet" href="style/sidebar.css">
 
 <div class="sidebar-header">
@@ -5,13 +6,17 @@
 </div>
 
 <ul class="list-unstyled components">
-	<p>Choix</p>
 	<li class="active"><a href="#homeSubmenu" data-toggle="collapse"
-		aria-expanded="false">Fonctionalités</a>
+		aria-expanded="false">Visualisation</a>
 		<ul class="collapse list-unstyled" id="homeSubmenu">
-			<li><a href="#">Fonction 1</a></li>
-			<li>Fonction 2 : <input type="text" /></li>
-			<li>Fonction 2 : <input type="submit" /></li>
+			<li><a href="#visualisationTram" data-toggle="collapse"
+				aria-expanded="false">Visualisation de trams</a>
+				<ul class="collapse list-unstyled" id="visualisationTram">
+					<li><div w3-include-html="html/visualisationTram.html"></div>
+						<script>
+							w3.includeHTML();
+						</script></li>
+				</ul></li>
 		</ul></li>
 	<li><a href="#">About</a> <a href="#pageSubmenu"
 		data-toggle="collapse" aria-expanded="false">Pages</a>
@@ -20,4 +25,7 @@
 			<li><a href="#">Page 2</a></li>
 			<li><a href="#">Page 3</a></li>
 		</ul></li>
+
+
+	<li></li>
 </ul>
