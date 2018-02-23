@@ -1,13 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="fr" xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="jquery/jquery.mobile.icons-1.4.2.min.css" />
 <link rel="stylesheet"
 	href="jquery/jquery.mobile.structure-1.4.2.min.css" />
 <title>Carte simple</title>
 <?php
 session_start();
-if(!isset($_SESSION['username'])){ 
+if (! isset($_SESSION['username'])) {
     header("Location: http://localhost/phpProject/src/php/login.html");
 }
 ?>
@@ -16,29 +18,53 @@ if(!isset($_SESSION['username'])){
 	src="http://data.bordeaux-metropole.fr/api/cub.xjs?key=G0NDMI15J2"></script>
 
 <script type="text/javascript">
-	var abc;
+	var abc, bikes;
 	CUB.ready(function() {
 		CUB.init('zone_carte');
-
+		CUB.events.onLayersLoadEnd = null; // Première fois seulement
 		abc = new CUB.Layer.Dynamic();
+		bikes = new CUB.Layer.Dynamic();
 	});
 
 	function mapVcub() {
+		$.ajax({
+			  type: "POST",
+			  url: "recordAction.php",
+			  data: { string: "LOOK UP VCUB"}
+			}); 
 		abc.destroy();
+		bikes.destroy();
+		abc = new CUB.Layer.Dynamic();
 		CUB.ready(function() {
 			// CrÃ©ation de la couche
 
-			abc = new CUB.Layer.Dynamic('',
+			bikes = new CUB.Layer.Dynamic('',
 					'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2', {
 						layerName : 'TB_STVEL_P',
 						style : new CUB.Style({
 							color : new CUB.Color('#6892EB')
-						})
+						}),
+						selectable: true,
+						onSelect: function(entity) {
+							$.ajax({
+								  type: "POST",
+								  url: "recordAction.php",
+								  data: { string: "LOOK UP VCUBS STATION " + entity.attributes.NOM}
+								}); 
+							alert("LIGNES CORRESPONDANTS : " + entity.attributes.LIGNCORR);
+						}
 					});
 		});
 	};
 	function mapTraffic() {
+		$.ajax({
+			  type: "POST",
+			  url: "recordAction.php",
+			  data: { string: "LOOK UP TRAFFIC"}
+			}); 
 		abc.destroy();
+		bikes.destroy();
+		bikes = new CUB.Layer.Dynamic();
 		CUB.ready(function() {
 			// CrÃ©ation de la couche
 
@@ -56,6 +82,13 @@ if(!isset($_SESSION['username'])){
 		var dropdown = document.getElementById("chooseLine");
 		var lineName = dropdown.options[dropdown.selectedIndex].value;
 		abc.destroy();
+		bikes.destroy();
+		bikes = new CUB.Layer.Dynamic();
+		$.ajax({
+			  type: "POST",
+			  url: "recordAction.php",
+			  data: { string: "LOOK UP LINE " + lineName}
+			}); 
 		CUB
 				.ready(function() {
 					// CrÃ©ation de la couche
@@ -65,13 +98,64 @@ if(!isset($_SESSION['username'])){
 							'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2',
 							{
 								layerName : 'TB_CHEM_L',
-								style : new CUB.Style({
-									color : new CUB.Color('#3D1255')
+								style: new CUB.Style({
+									outlineColor: new CUB.Color(CUB.Color.colors.BLUE),
+									outlineWidth: 2,
+									label: '${NUMCOMLI}', // Libellé de l'étiquette
+									labelColor: new CUB.Color(CUB.Color.colors.BLACK), // Couleur du libellé de l'étiquette
+									labelOutlineColor: new CUB.Color(CUB.Color.colors.WHITE), // Couleur de contour du libellé de l'étiquette
+									labelOutlineWidth: 2, // Taille du contour du libellé de l'étiquette
+									labelSize: 13, // Taille du libellé de l'étiquette
+									labelMaxScaledenom: 5000 // Echelle maximum d'affichage des libellés
 								}),
 								wfsFilter : '<PropertyIsEqualTo><PropertyName>NUMEXPLO</PropertyName><Literal>'
 										+ lineName
-										+ '</Literal></PropertyIsEqualTo>'
+										+ '</Literal></PropertyIsEqualTo>',
+										selectable: true,
+										onSelect: function(entity) {
+											bikes.destroy();
+											var lineName = entity.attributes.NOMCOMLI;
+											$.ajax({
+												  type: "POST",
+												  url: "recordAction.php",
+												  data: { string: "LOOK UP VCUBS OF " + lineName}
+												}); 
+											lineName = lineName.replace("Tram ", "");
+											var filter;
+											if(lineName == 'C'){
+												filter = '<Or><PropertyIsLike wildCard="*"'
+													+' singleChar="." escape="!"><PropertyName>LIGNCORR'
+													+'</PropertyName><Literal>*/C/*</Literal></PropertyIsLike>'
+													+'<PropertyIsLike wildCard="*" singleChar="." escape="!">'
+													+'<PropertyName>LIGNCORR</PropertyName><Literal>'
+													+'C/*</Literal></PropertyIsLike><PropertyIsEqualTo>'
+													+'<PropertyName>LIGNCORR</PropertyName><Literal>*/C'
+													+'</Literal></PropertyIsEqualTo></Or>';
+											}else{
+												filter = '<PropertyIsLike wildCard="*" singleChar="." escape="!"><PropertyName>LIGNCORR</PropertyName><Literal>'
+													+'*'+lineName+'*'
+													+'</Literal></PropertyIsLike>';
+											}
+											bikes = new CUB.Layer.Dynamic('',
+													'http://data.bordeaux-metropole.fr/wfs?key=G0NDMI15J2', {
+														layerName : 'TB_STVEL_P',
+														style : new CUB.Style({
+															color : new CUB.Color('#6892EB')
+														}),
+														wfsFilter : filter,
+														selectable: true,
+														onSelect: function(entity) {
+															$.ajax({
+																  type: "POST",
+																  url: "recordAction.php",
+																  data: { string: "LOOK UP VCUBS STATION " + entity.attributes.NOM}
+																}); 
+															alert("LIGNES CORRESPONDANTS : " + entity.attributes.LIGNCORR);
+														}
+													});
+										}
 							});
+					
 				});
 	};
 </script>
@@ -107,15 +191,15 @@ body, html {
 					VCUB</button>
 			</div>
 			<div>
-				<a href="/phpProject/src/RechercheAdresse.php"><button
+				<a href="/phpProject/src/php/addressSearch.php"><button
 						name="chooseVcub" id="chooseVcub" onclick="mapVcub()">SEARCH
 						ADDRESS</button></a>
 			</div>
 			<div class="form-item" id="edit-navitia-line-wrapper">
 				<label for="edit-navitia-line">Selectionner votre ligne </label> <select
 					name="chooseLine" id="chooseLine" class="form-select"
-					onchange="mapRedraw()"><option value="0"
-						selected="selected">Choisissez une ligne</option>
+					onchange="mapRedraw()"><option value="0" selected="selected">Choisissez
+						une ligne</option>
 					<optgroup label="Tram">
 						<option value="59">Tram A</option>
 						<option value="60">Tram B</option>

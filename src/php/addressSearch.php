@@ -66,6 +66,7 @@ form.head>div, form.head>input {
 		
 		CUB.ready(function() {
 			CUB.init();
+			CUB.events.onLayersLoadEnd = null;
 			CUB.enable();
 			place = new CUB.Layer.Dynamic();
 			
