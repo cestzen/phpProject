@@ -110,7 +110,9 @@ form.head>div, form.head>input {
 				+ '</form>'
 				+ '<select id="voies_result" size="10" style="width: 400px"></select><br/>'
 				+ '<div id="results"></div>'
-				+ '<input type="button" id="button" value="Cadrer sur" onclick="localiser()"/><br/>'
+				+ '<input type="button" id="button" value="Cadrer sur" onclick="localiser()"/>'
+				+ '<a href="/phpProject/src/php/showBusses.php"><input type="button"'
+				+ ' value="Retourner aux services" /></a><br/>'
 				+ '</div>';
 			
 			// Construction du panel de contrôles
