@@ -206,8 +206,6 @@ form.head>div, form.head>input {
 				  type: "POST",
 				  url: "recordAction.php",
 				  data: { string: "CHOSE ADDRESS " + resultat.attributes.NUMERO + resultat.attributes.REP + ' ' + resultat.attributes.NOM_VOIE }
-				}).done(function( msg ) {
-				  alert( "Data Saved: " + msg );
 				});  
 
 			CUB.moveToExtent(resultat.getExtent());
@@ -232,6 +230,11 @@ form.head>div, form.head>input {
 			// &#233;v&#232;nement d&#233;clench&#233; à la s&#233;lection d'un objet (entit&#233;)
 			place.onSelect = function(entity) 
 			{
+				$.ajax({
+					  type: "POST",
+					  url: "recordAction.php",
+					  data: { string: "CHOSE " + entity.attributes.RESEAU + ' ' +  entity.attributes.LIGNEDES}
+					}); 
 				alert('Ligne : ' + entity.attributes.LIGNEDES + '\nAdresse : ' + entity.attributes.ADRESSE + '\nType : ' + entity.attributes.RESEAU);
 			}
 		}
