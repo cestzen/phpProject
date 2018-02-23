@@ -3,7 +3,7 @@
 <?php
 session_start();
 if (! isset($_SESSION['username'])) {
-    header("Location: http://localhost/phpProject/src/php/login.html");
+    header("Location: http://localhost/phpProject/src/html/login.html");
 }
 
 ?>
