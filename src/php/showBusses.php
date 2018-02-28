@@ -293,6 +293,9 @@ body, html {
 						<option value="96">Spécifique 96</option>
 					</optgroup></select>
 			</div>
+			<div>
+				<a href="/phpProject/src/php/logOff.php"><button>LOG OUT</button></a>
+			</div>
 		</div>
 	</div>
 </body>
