@@ -25,7 +25,7 @@ if ($result->num_rows == 1) {
     $_SESSION['username'] = $result->fetch_assoc()['id'];
     header("Location: http://localhost/phpProject/src/php/showBusses.php");
 } else {
-    header("Location: http://localhost/phpProject/src/php/login.html");
+    header("Location: http://localhost/phpProject/src/html/login.html");
 }
 $conn->close();
 

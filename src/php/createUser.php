@@ -17,9 +17,9 @@
     echo "Connected successfully";
     $sql = "INSERT INTO `users` (`id`, `username`, `password`) VALUES (NULL, '".$desiredUser."', '".$desiredPassword."')";
     if ($conn->query($sql) === TRUE) {
-        echo "Database created successfully";
+        header("Location: http://localhost/phpProject/src/html/login.html");
     } else {
-        echo "Error creating database: " . $conn->error;
+        header("Location: http://localhost/phpProject/src/html/createUser.html");
     }
     $conn->close();
 ?>
